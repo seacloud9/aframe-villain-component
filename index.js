@@ -52,7 +52,7 @@ AFRAME.registerComponent('villan', {
             default: 0
         },
         MOVESPEED: {
-            default: 100
+            default: 10
         },
         hasLoaded:{
           default: false
