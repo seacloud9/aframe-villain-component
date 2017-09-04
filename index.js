@@ -7,7 +7,7 @@ if (typeof AFRAME === 'undefined') {
 /**
  * Villan component for A-Frame.
  */
-AFRAME.registerComponent('villan', {
+AFRAME.registerComponent('villain', {
     schema: {
         cam: {
             default: null
