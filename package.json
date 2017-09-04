@@ -1,12 +1,12 @@
 {
-  "name": "aframe-villan-component",
+  "name": "aframe-villain-component",
   "version": "1.0.0",
   "description": "A villan entity for use with aframe-maze",
   "main": "index.js",
-  "cdn": "dist/aframe-villan-component.min.js",
+  "cdn": "dist/aframe-villain-component.min.js",
   "scripts": {
-    "dev": "budo index.js:dist/aframe-villan-component.min.js --port 7000 --live --open",
-    "dist": "webpack index.js dist/aframe-villan-component.js && webpack -p index.js dist/aframe-villan-component.min.js",
+    "dev": "budo index.js:dist/aframe-villain-component.min.js --port 7000 --live --open",
+    "dist": "webpack index.js dist/aframe-villain-component.js && webpack -p index.js dist/aframe-villain-component.min.js",
     "lint": "semistandard -v | snazzy",
     "prepublish": "npm run dist",
     "ghpages": "ghpages",
