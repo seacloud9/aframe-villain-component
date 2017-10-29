@@ -57,12 +57,19 @@ AFRAME.registerComponent('villain', {
         hasLoaded:{
           default: false
         },
+        sceneHasLoaded:{
+            default:false
+        },
         mapW: {default: 10},
         mapH: {default: 10},
         offsetX: {default: -220},
         offsetZ: {default: -100},
         UNITSIZE: {default: 250},
-        WALLHEIGHT: {default: 250 / 3}
+        WALLHEIGHT: {default: 250 / 3},
+        collisionDistance: {default: 25},
+        collisionAction:  {default: null},
+        isColliding: {default: false},
+        pauseForAction: {default: false}
     },
 
     /**
@@ -74,11 +81,15 @@ AFRAME.registerComponent('villain', {
      * Called once when component is attached. Generally for initial setup.
      */
     init: function () {
-        document.querySelector('a-scene').addEventListener('loaded', this.sceneHasLoaded.bind(this) )
+        if(!this.data.sceneHasLoaded){
+            document.querySelector('a-scene').addEventListener('loaded', this.sceneHasLoaded.bind(this))
+        }else{
+            this.sceneHasLoaded.apply(this)
+        }
     },
 
     checkWallCollision: function (v) {
-        var c = this.getMapSector(v);
+        const c = this.getMapSector(v);
         return this.data.mapRef[c.x][c.z] > 0;
     },
 
@@ -94,7 +105,7 @@ AFRAME.registerComponent('villain', {
             this.data.cam = document.querySelector(this.data.camID);
         }
 
-        var c = this.getMapSector(this.data.cam.object3D.position);
+        const c = this.getMapSector(this.data.cam.object3D.position);
         do {
             this.data.x = this.getRandBetween(0, this.data.mapW - 1);
             this.data.z = this.getRandBetween(0, this.data.mapH - 1);
@@ -109,8 +120,8 @@ AFRAME.registerComponent('villain', {
     },
 
     getMapSector: function (v) {
-        var x = Math.floor((v.x + this.data.UNITSIZE / 2) / this.data.UNITSIZE + this.data.mapW / 2);
-        var z = Math.floor((v.z + this.data.UNITSIZE / 2) / this.data.UNITSIZE + this.data.mapW / 2);
+        const x = Math.floor((v.x + this.data.UNITSIZE / 2) / this.data.UNITSIZE + this.data.mapW / 2);
+        const z = Math.floor((v.z + this.data.UNITSIZE / 2) / this.data.UNITSIZE + this.data.mapW / 2);
         return {x: x, z: z};
     },
 
@@ -120,6 +131,11 @@ AFRAME.registerComponent('villain', {
      */
     update: function (oldData) {
 
+    },
+
+
+    distance: function(x1, y1, x2, y2) {
+        return Math.sqrt((x2-x1)*(x2-x1)+(y2-y1)*(y2-y1));
     },
 
     tick: function (_time, _delta) {
@@ -139,6 +155,17 @@ AFRAME.registerComponent('villain', {
             this.el.object3D.translateX(this.data.aispeed * this.data.lastRandomX);
             this.el.object3D.translateZ(this.data.aispeed * this.data.lastRandomZ);
             var c = this.getMapSector(this.el.object3D.position);
+            // check for collision with default target camera
+            if (this.distance(c.x, c.z, this.data.cam.object3D.position.x, this.data.cam.object3D.position.z) < this.data.collisionDistance && !this.data.pauseForAction){
+               this.data.isColliding = true
+               if(this.data.collisionAction){
+                this.data.pauseForAction = true   
+                this.data.collisionAction()
+               }
+            }else{
+                this.data.isColliding = false
+            }
+
             if (c.x < 0 || c.x >= this.data.mapW || c.y < 0 || c.y >= this.data.mapH || this.checkWallCollision(this.el.object3D.position)) {
                 this.el.object3D.translateX(-2 * this.data.aispeed * this.data.lastRandomX);
                 this.el.object3D.translateZ(-2 * this.data.aispeed * this.data.lastRandomZ);
@@ -151,8 +178,6 @@ AFRAME.registerComponent('villain', {
             }
             var cc = this.getMapSector(this.data.cam.object3D.position);
         }
-
-
     },
 
     /**
