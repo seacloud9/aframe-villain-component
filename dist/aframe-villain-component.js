@@ -59,7 +59,7 @@
 	            default: null
 	        },
 	        aispeed: {
-	            default: null
+	            default: 0.5
 	        },
 	        camID: {
 	            default: '#camera'
@@ -179,12 +179,12 @@
 
 	    },
 
-
 	    distance: function(x1, y1, x2, y2) {
 	        return Math.sqrt((x2-x1)*(x2-x1)+(y2-y1)*(y2-y1));
 	    },
 
 	    tick: function (_time, _delta) {
+
 	        this.data.delta = _delta
 	        this.data.time = _time
 	        if(this.data.hasLoaded){
@@ -198,6 +198,7 @@
 	                this.data.lastRandomX = Math.random() * 2 - 1;
 	                this.data.lastRandomZ = Math.random() * 2 - 1;
 	            }
+	            
 	            this.el.object3D.translateX(this.data.aispeed * this.data.lastRandomX);
 	            this.el.object3D.translateZ(this.data.aispeed * this.data.lastRandomZ);
 	            var c = this.getMapSector(this.el.object3D.position);
