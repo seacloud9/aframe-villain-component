@@ -115,6 +115,11 @@
 	        collisionDistance: {default: 25},
 	        collisionAction:  {default: null},
 	        isColliding: {default: false},
+	        escapeProbability: {default: 0.5},
+	        loot: {default: null},
+	        gold: {default: 10},
+	        specialMessaging: {default: null},
+	        specialAbilities: {default: null},
 	        pauseForAction: {default: false}
 	    },
 
